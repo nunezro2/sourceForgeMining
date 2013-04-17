@@ -1,0 +1,11 @@
+project	developer	cine	Carla				
+project	developer	radio_maria	Claudia				
+project	developer	afganos	Fernando				
+project	developer	cena	Rafael				
+project	developer	fiesta	Guillermo				
+project	audience	cena	Developers				
+project	audience	fiesta	Developers				
+project	audience	cine	End Users/Desktop				
+project	audience	teatro	Developers				
+project	audience	afganos	End Users/Desktop				
+project	audience	radio_maria	End Users/Desktop				
