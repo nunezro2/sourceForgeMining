@@ -33,6 +33,10 @@ public class vertex {
 		this.type = t;
 	}
 	
+	public String getName(){
+		return this.name;
+	}
+	
 	public long getId(){
 		return this.id;
 	}
