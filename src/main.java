@@ -164,8 +164,8 @@ public class main {
 		System.out.println("Degree of p4 " + graph.degreeOf(paper.get("p4")));
 	
 		// Creating the adjacency matrices
-		int A_P[][] = adjacencyMatrix(author, paper);
-		int P_V[][] = adjacencyMatrix(paper, venue);
+		int A_P[][] = adjacencyMatrix(graph, author, paper);
+		int P_V[][] = adjacencyMatrix(graph, paper, venue);
 		// Creating the inverse matrices
 		int P_A[][] = invertMatrix(A_P);
 		int V_P[][] = invertMatrix(P_V);
@@ -197,7 +197,7 @@ public class main {
 		*/
 		
 		// Saving to file
-		printToFile(author, author, fileOut, npc, npc2, npc3);
+		printToFile(graph, author, author, fileOut, npc, npc2, npc3);
 		
 		verticesFile.close();
 		edgesFile.close();
@@ -281,31 +281,31 @@ public class main {
 		
 		// TODO this can be done immediately during reading the file
 		for (vertex node: project.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: developer.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: audience.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: language.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: license.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: os.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		for (vertex node: topic.values()) {
-			graph.addVertex(node);
+			graph2.addVertex(node);
 		}
 		
 		//Loading the edges to the graph
@@ -327,22 +327,23 @@ public class main {
 						Entities q = Entities.valueOf(tokens[1].toUpperCase());
 						switch(q) {
 							case DEVELOPER: 
-									graph.addEdge(project.get(tokens[2]), developer.get(tokens[3]));
+									System.out.println("link " + " " + tokens[2] + " " + tokens[3]);
+									graph2.addEdge(project.get(tokens[2]), developer.get(tokens[3]));
 								break;
 							case AUDIENCE: 
-									graph.addEdge(project.get(tokens[2]), audience.get(tokens[3]));
+									graph2.addEdge(project.get(tokens[2]), audience.get(tokens[3]));
 								break;
 							case LANGUAJE: 
-									graph.addEdge(project.get(tokens[2]), language.get(tokens[3]));
+									graph2.addEdge(project.get(tokens[2]), language.get(tokens[3]));
 								break;
 							case LICENSE: 
-									graph.addEdge(project.get(tokens[2]), license.get(tokens[3]));
+									graph2.addEdge(project.get(tokens[2]), license.get(tokens[3]));
 								break;
 							case SYSTEM: 
-									graph.addEdge(project.get(tokens[2]), os.get(tokens[3]));
+									graph2.addEdge(project.get(tokens[2]), os.get(tokens[3]));
 								break;
 							case TOPIC: 
-									graph.addEdge(project.get(tokens[2]), topic.get(tokens[3]));
+									graph2.addEdge(project.get(tokens[2]), topic.get(tokens[3]));
 								break;
 							default:
 								System.out.println("THERE IS A UNEXPECTED NODE LABEL: " + tokens[1] + " ... EXITING!");
@@ -352,7 +353,7 @@ public class main {
 						break;
 					case DEVELOPER: 
 						if (tokens[1].equalsIgnoreCase("project")) {
-							graph.addEdge(developer.get(tokens[2]), project.get(tokens[3]));
+							graph2.addEdge(developer.get(tokens[2]), project.get(tokens[3]));
 						} else  {
 							System.out.println("DEVELOPER: SOMETHING WRONG HAPPENED " + tokens[0] + " " + tokens[1] + "... exiting");
 							System.exit(-1);
@@ -360,7 +361,7 @@ public class main {
 						break;
 					case AUDIENCE: 
 						if (tokens[1].equalsIgnoreCase("project")) {
-							graph.addEdge(audience.get(tokens[2]), project.get(tokens[3]));
+							graph2.addEdge(audience.get(tokens[2]), project.get(tokens[3]));
 						} else  {
 							System.out.println("AUDIENCE: SOMETHING WRONG HAPPENED " + tokens[1] + " ... exiting");
 							System.exit(-1);
@@ -368,7 +369,7 @@ public class main {
 						break;
 					case LANGUAJE: 
 						if (tokens[1].equalsIgnoreCase("project")) {
-							graph.addEdge(language.get(tokens[2]), project.get(tokens[3]));
+							graph2.addEdge(language.get(tokens[2]), project.get(tokens[3]));
 						} else  {
 							System.out.println("LANGUAGE: SOMETHING WRONG HAPPENED... exiting");
 							System.exit(-1);
@@ -376,7 +377,7 @@ public class main {
 						break;
 					case LICENSE: 
 						if (tokens[1].equalsIgnoreCase("project")) {
-							graph.addEdge(license.get(tokens[2]), project.get(tokens[3]));
+							graph2.addEdge(license.get(tokens[2]), project.get(tokens[3]));
 						} else  {
 							System.out.println("LICENSE: SOMETHING WRONG HAPPENED... exiting");
 							System.exit(-1);
@@ -384,7 +385,7 @@ public class main {
 						break;
 					case SYSTEM: 
 						if (tokens[1].equalsIgnoreCase("project")) {
-							graph.addEdge(os.get(tokens[2]), project.get(tokens[3]));
+							graph2.addEdge(os.get(tokens[2]), project.get(tokens[3]));
 						} else  {
 							System.out.println("SYSTEM: SOMETHING WRONG HAPPENED... exiting");
 							System.exit(-1);
@@ -405,8 +406,11 @@ public class main {
 				}
 			}
 	
-		System.out.println("printing the graph");
-		System.out.println(graph.toString());
+			System.out.println(graph2.containsEdge(developer.get("2708097"), project.get("372429")));
+			
+			
+		//System.out.println("printing the graph");
+		//System.out.println(graph.toString());
 		/*
 		System.out.println("Degree of Carla " + graph.degreeOf(developer.get("Carla")));
 		System.out.println("Degree of Claudia " + graph.degreeOf(developer.get("Claudia")));
@@ -428,12 +432,12 @@ public class main {
 		*/
 		// Creating the adjacency matrices
 		System.out.println("Creating the Adjacency Matrices");
-		int D_P[][] = adjacencyMatrix(developer, project);
-		int P_PL[][] = adjacencyMatrix(project, language);
-		int P_T[][] = adjacencyMatrix(project, topic);
-		int P_A2[][] = adjacencyMatrix(project, audience);
-		int P_OS[][] = adjacencyMatrix(project, os);
-		int P_L[][] = adjacencyMatrix(project, license);
+		int D_P[][] = adjacencyMatrix(graph2, developer, project);
+		int P_PL[][] = adjacencyMatrix(graph2, project, language);
+		int P_T[][] = adjacencyMatrix(graph2, project, topic);
+		int P_A2[][] = adjacencyMatrix(graph2, project, audience);
+		int P_OS[][] = adjacencyMatrix(graph2, project, os);
+		int P_L[][] = adjacencyMatrix(graph2, project, license);
 		
 		// Creating the inverse matrices
 		System.out.println("Creating the Inverse Matrices");
@@ -469,7 +473,7 @@ public class main {
 		
 		//Printing to file
 		System.out.println("Printing to File!");
-		printToFile(developer, project, fileOut2, np2c, np3c, np4c, np5c, np6c, np7c);
+		printToFile(graph2, developer, project, fileOut2, np2c, np3c, np4c, np5c, np6c, np7c);
 		
 		System.out.println("DONE!");
 		verticesFile2.close();
@@ -478,14 +482,14 @@ public class main {
 		stdin.close();
 	}
 	
-	public static int[][] adjacencyMatrix( Map<String, vertex> a, Map<String, vertex> b ) {
+	public static int[][] adjacencyMatrix( UndirectedGraph<vertex, DefaultEdge> g, Map<String, vertex> a, Map<String, vertex> b ) {
 		
 		int mat[][] = new int[a.size()][b.size()];
 		int r = 0, c = 0;
 		for (vertex row: a.values() ) {
 			//System.out.print(row.getName() + " ");
 			for (vertex column: b.values()) {
-				if (graph.containsEdge(row, column))
+				if (g.containsEdge(row, column))
 					mat[r][c] = 1;
 				//System.out.print(column.getName() + " ");
 				//System.out.print(mat[r][c] + " ");
@@ -520,13 +524,17 @@ public class main {
 		}
 	}
 	
-	public static void printToFile(Map<String, vertex> a, Map<String, vertex> b, PrintWriter fileOut, Object... v) throws IOException{
+	public static void printToFile( UndirectedGraph<vertex, DefaultEdge> g, Map<String, vertex> a, Map<String, vertex> b, PrintWriter fileOut, Object... v) throws IOException{
 		
 		for (int i = 0; i < a.size() ; i++) {
 			for (int j = 0; j < b.size(); j++) {
 				fileOut.print( ((vertex)(a.values()).toArray()[i]).getName() + "-" + ((vertex)(b.values()).toArray()[j]).getName() + ",	" );
 				for (Object meta_path: v) {
 					fileOut.print( ((double[])(meta_path))[i*j + j] + ",	");
+				}
+				fileOut.print(g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()))? "1":"0");
+				if (g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()))) {
+					System.out.println("HERE!");
 				}
 				fileOut.println();
 			}	
