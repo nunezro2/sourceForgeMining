@@ -18,10 +18,13 @@ public class main {
 	public static Map<String, vertex> license = new TreeMap<String, vertex>();
 	public static Map<String, vertex> audience = new TreeMap<String, vertex>();
 	public static Map<String, vertex> os = new TreeMap<String, vertex>();
+	public static Map<String, vertex> status = new TreeMap<String, vertex>();
 	
 	public static Map<String, vertex> author = new TreeMap<String, vertex>();
 	public static Map<String, vertex> paper = new TreeMap<String, vertex>();
 	public static Map<String, vertex> venue = new TreeMap<String, vertex>();
+	
+	public static int D_P_D[][] = null;
 	
 	/*
 	public static final String A = "author";
@@ -42,10 +45,10 @@ public class main {
 		Scanner edgesFile = null;
 		PrintWriter fileOut = null;
 		try {
-		//System.out.println(main.class.getClassLoader().getResource("example/vertices_example").getPath());
-		verticesFile = new Scanner(new File(main.class.getClassLoader().getResource("example/vertices_example").getPath()));
-		edgesFile = new Scanner(new File(main.class.getClassLoader().getResource("example/edges_example").getPath()));
-		fileOut = new PrintWriter ( new FileWriter ("NRC_output_example.txt"));
+			//System.out.println(main.class.getClassLoader().getResource("example/vertices_example").getPath());
+			verticesFile = new Scanner(new File(main.class.getClassLoader().getResource("example/vertices_example").getPath()));
+			edgesFile = new Scanner(new File(main.class.getClassLoader().getResource("example/edges_example").getPath()));
+			fileOut = new PrintWriter ( new FileWriter ("NRC_output_example.txt"));
 		} catch (NullPointerException  e) {
 			System.out.println("FILE NOT FOUND: " + e.getMessage() + "... EXITING");
 			System.exit(-1);
@@ -186,9 +189,9 @@ public class main {
 		int pc_3[][] = matmul(P_A, A_P);
 		
 		//Computing NPC
-		double npc[] = NPC(pc);
-		double npc2[] = NPC(pc_2);
-		double npc3[] = NPC(pc_3);
+		//double npc[] = NPC(pc);
+		//double npc2[] = NPC(pc_2);
+		//double npc3[] = NPC(pc_3);
 		
 		/*
 		for (double x: npc) {
@@ -197,7 +200,7 @@ public class main {
 		*/
 		
 		// Saving to file
-		printToFile(graph, author, author, fileOut, npc, npc2, npc3);
+		//printToFile(graph, author, author, fileOut, npc, npc2, npc3);
 		
 		verticesFile.close();
 		edgesFile.close();
@@ -211,11 +214,13 @@ public class main {
 		Scanner verticesFile2 = null;
 		Scanner edgesFile2 = null;
 		PrintWriter fileOut2 = null;
+		PrintWriter fileOut3 = null;
 		try {
 			//System.out.println(main.class.getClassLoader().getResource("example/").getPath());
-			verticesFile2 = new Scanner(new File(main.class.getClassLoader().getResource("example/nodes.txt").getPath()));
-			edgesFile2 = new Scanner(new File(main.class.getClassLoader().getResource("example/edges.txt").getPath()));
-			fileOut2 = new PrintWriter ( new FileWriter ("NRC_output_sourceForge.txt"));
+			verticesFile2 = new Scanner(new File(main.class.getClassLoader().getResource("example/Nodes_50_50.txt").getPath()));
+			edgesFile2 = new Scanner(new File(main.class.getClassLoader().getResource("example/Edges_50_50.txt").getPath()));
+			fileOut2 = new PrintWriter ( new FileWriter("NRC_output_sourceForge_50_50.txt"));
+			fileOut3 = new PrintWriter ( new FileWriter("NRC_output_sourceForge_50_50_SS.txt"));
 		} catch (NullPointerException  e) {
 			System.out.println("FILE NOT FOUND: " + e.getMessage() + "... EXITING!");
 			System.exit(-1);
@@ -255,7 +260,7 @@ public class main {
 					//System.out.println("this is audience"); 
 					audience.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
 					break;
-				case LANGUAJE: 
+				case LANGUAGE: 
 					//System.out.println("this is LANGUAJE"); 
 					language.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
 					break;
@@ -263,13 +268,17 @@ public class main {
 				//	System.out.println("this is LICENSE"); 
 					license.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
 					break;
-				case SYSTEM: 
+				case SO: 
 					//System.out.println("this is SYSTEM"); 
 					os.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
 					break;
 				case TOPIC: 
 				//	System.out.println("this is TOPIC"); 
 					topic.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
+					break;
+				case STATUS: 
+				//	System.out.println("this is TOPIC"); 
+					status.put(tokens[1], new vertex(tokens[0].toLowerCase(), tokens[1].toLowerCase())); 
 					break;
 				default:
 					System.out.println("THERE IS A NOT UNEXPECTED NODE LABEL: " + tokens[0] + " ... EXITING!");
@@ -308,6 +317,10 @@ public class main {
 			graph2.addVertex(node);
 		}
 		
+		for (vertex node: status.values()) {
+			graph2.addVertex(node);
+		}
+		
 		//Loading the edges to the graph
 			while (edgesFile2.hasNext()) {
 				String line = edgesFile2.nextLine();
@@ -327,24 +340,31 @@ public class main {
 						Entities q = Entities.valueOf(tokens[1].toUpperCase());
 						switch(q) {
 							case DEVELOPER: 
-									System.out.println("link " + " " + tokens[2] + " " + tokens[3]);
+									//System.out.println("link " + " " + tokens[2] + " " + tokens[3]);
 									graph2.addEdge(project.get(tokens[2]), developer.get(tokens[3]));
 								break;
 							case AUDIENCE: 
+									System.out.println("link " + " " + tokens[2] + " " + tokens[3]);
 									graph2.addEdge(project.get(tokens[2]), audience.get(tokens[3]));
 								break;
-							case LANGUAJE: 
+							case LANGUAGE: 
 									graph2.addEdge(project.get(tokens[2]), language.get(tokens[3]));
 								break;
 							case LICENSE: 
 									graph2.addEdge(project.get(tokens[2]), license.get(tokens[3]));
 								break;
-							case SYSTEM: 
+							case SO: 
+									System.out.println(tokens[2] + " " + tokens[3]);
 									graph2.addEdge(project.get(tokens[2]), os.get(tokens[3]));
 								break;
 							case TOPIC: 
+									System.out.println(tokens[2] + " " + tokens[3]);
 									graph2.addEdge(project.get(tokens[2]), topic.get(tokens[3]));
 								break;
+							case STATUS: 
+								System.out.println(tokens[2] + " " + tokens[3]);
+								graph2.addEdge(project.get(tokens[2]), status.get(tokens[3]));
+							break;
 							default:
 								System.out.println("THERE IS A UNEXPECTED NODE LABEL: " + tokens[1] + " ... EXITING!");
 								System.exit(-1);
@@ -367,7 +387,7 @@ public class main {
 							System.exit(-1);
 						} 
 						break;
-					case LANGUAJE: 
+					case LANGUAGE: 
 						if (tokens[1].equalsIgnoreCase("project")) {
 							graph2.addEdge(language.get(tokens[2]), project.get(tokens[3]));
 						} else  {
@@ -383,7 +403,7 @@ public class main {
 							System.exit(-1);
 						} 
 						break;
-					case SYSTEM: 
+					case SO: 
 						if (tokens[1].equalsIgnoreCase("project")) {
 							graph2.addEdge(os.get(tokens[2]), project.get(tokens[3]));
 						} else  {
@@ -399,6 +419,14 @@ public class main {
 							System.exit(-1);
 						} 
 						break;
+					case STATUS: 
+						if (tokens[1].equalsIgnoreCase("project")) {
+							graph.addEdge(status.get(tokens[2]), project.get(tokens[3]));
+						} else  {
+							System.out.println("TOPIC: SOMETHING WRONG HAPPENED... exiting");
+							System.exit(-1);
+						} 
+						break;
 					default:
 						System.out.println("THERE IS A UNEXPECTED NODE LABEL: " + tokens[0] +" ... EXITING!");
 						System.exit(-1);
@@ -406,26 +434,12 @@ public class main {
 				}
 			}
 	
-			System.out.println(graph2.containsEdge(developer.get("2708097"), project.get("372429")));
+			//System.out.println(graph2.containsEdge(developer.get("2708097"), project.get("372429")));
 			
 			
 		//System.out.println("printing the graph");
-		//System.out.println(graph.toString());
+		System.out.println(graph2.toString());
 		/*
-		System.out.println("Degree of Carla " + graph.degreeOf(developer.get("Carla")));
-		System.out.println("Degree of Claudia " + graph.degreeOf(developer.get("Claudia")));
-		System.out.println("Degree of Fer " + graph.degreeOf(developer.get("Fernando")));
-		System.out.println("Degree of Rafael " + graph.degreeOf(developer.get("Rafael")));
-		System.out.println("Degree of Guillermo " + graph.degreeOf(developer.get("Guillermo")));
-		
-		
-		System.out.println("Degree of Fiesta " + graph.degreeOf(project.get("fiesta")));
-		System.out.println("Degree of Cena " + graph.degreeOf(project.get("cena")));
-		System.out.println("Degree of Teatro " + graph.degreeOf(project.get("teatro")));
-		System.out.println("Degree of Cine " + graph.degreeOf(project.get("cine")));
-		System.out.println("Degree of Afganos " + graph.degreeOf(project.get("afganos")));
-		System.out.println("Degree of Radio Maria " + graph.degreeOf(project.get("radio_maria")));
-		
 		
 		System.out.println("Degree of Developers " + graph.degreeOf(audience.get("Developers")));
 		System.out.println("Degree of End Users/Desktop " + graph.degreeOf(audience.get("End Users/Desktop")));
@@ -434,16 +448,19 @@ public class main {
 		System.out.println("Creating the Adjacency Matrices");
 		int D_P[][] = adjacencyMatrix(graph2, developer, project);
 		int P_PL[][] = adjacencyMatrix(graph2, project, language);
-		int P_T[][] = adjacencyMatrix(graph2, project, topic);
+		//int P_T[][] = adjacencyMatrix(graph2, project, topic);
+		int P_S[][] = adjacencyMatrix(graph2, project, status);
 		int P_A2[][] = adjacencyMatrix(graph2, project, audience);
 		int P_OS[][] = adjacencyMatrix(graph2, project, os);
 		int P_L[][] = adjacencyMatrix(graph2, project, license);
+		
 		
 		// Creating the inverse matrices
 		System.out.println("Creating the Inverse Matrices");
 		int P_D[][] = invertMatrix(D_P);
 		int PL_P[][] = invertMatrix(P_PL);
-		int T_P[][]	= invertMatrix(P_T);
+		//int T_P[][]	= invertMatrix(P_T);
+		int S_P[][]	= invertMatrix(P_S);
 		int A2_P[][] = invertMatrix(P_A2);
 		int OS_P[][] = invertMatrix(P_OS);
 		int L_P[][] = invertMatrix(P_L);
@@ -451,34 +468,38 @@ public class main {
 		//Matrix multiplication or Path Count (PC)
 		System.out.println("Multiplying...");
 		int pc2[][] = matmul(D_P, P_PL, PL_P);
-		int pc3[][] = matmul(D_P, P_T, T_P);
+		int pc3[][] = matmul(D_P, P_S, S_P);
 		int pc4[][] = matmul(D_P, P_A2, A2_P);
 		int pc5[][] = matmul(D_P, P_OS, OS_P);
 		int pc6[][] = matmul(D_P, P_L, L_P);
 		int pc7[][] = matmul(D_P, P_D, D_P);
-		
+		//D_P_D = matmul(D_P, P_D);
+		//System.out.println(D_P_D.length);
 		//Computing NPC
 		System.out.println("Creating the NPC for D-P-Languages-P");
-		double np2c[] = NPC(pc2);
-		System.out.println("Creating the NPC for D-P-Topic-P");
-		double np3c[] = NPC(pc3);
+		double np2c[] = NPC(pc2, developer, project, "developer", "project", "D-P-Languages-P");
+		System.out.println("Creating the NPC for D-P-Status-P");
+		double np3c[] = NPC(pc3, developer, project, "developer", "project", "D-P-Status-P");
 		System.out.println("Creating the NPC for D-P-Audience-P");
-		double np4c[] = NPC(pc4);
+		double np4c[] = NPC(pc4, developer, project, "developer", "project", "D-P-Audience-P");
 		System.out.println("Creating the NPC for D-P-Operating sys-P");
-		double np5c[] = NPC(pc5);
-		System.out.println("Creating the NPC for D-P-Licence-P");
-		double np6c[] = NPC(pc6);
+		double np5c[] = NPC(pc5, developer, project, "developer", "project", "D-P-Operating sys-P");
+		System.out.println("Creating the NPC for D-P-License-P");
+		double np6c[] = NPC(pc6, developer, project, "developer", "project", "D-P-License-P");
 		System.out.println("Creating the NPC for D-P-Developer-P");
-		double np7c[] = NPC(pc7);
+		double np7c[] = NPC(pc7, developer, project, "developer", "project", "D-P-Developer-P");
 		
 		//Printing to file
 		System.out.println("Printing to File!");
+		printToFileSS(graph2, developer, project, fileOut3, np2c, np3c, np4c, np5c, np6c, np7c);
 		printToFile(graph2, developer, project, fileOut2, np2c, np3c, np4c, np5c, np6c, np7c);
+
 		
 		System.out.println("DONE!");
 		verticesFile2.close();
 		edgesFile2.close();
 		fileOut2.close();
+		fileOut3.close();
 		stdin.close();
 	}
 	
@@ -528,14 +549,18 @@ public class main {
 		
 		for (int i = 0; i < a.size() ; i++) {
 			for (int j = 0; j < b.size(); j++) {
-				fileOut.print( ((vertex)(a.values()).toArray()[i]).getName() + "-" + ((vertex)(b.values()).toArray()[j]).getName() + ",	" );
+				fileOut.print( ((vertex)(a.values()).toArray()[i]).getName() + "-" + ((vertex)(b.values()).toArray()[j]).getName() + "," );
 				for (Object meta_path: v) {
-					fileOut.print( ((double[])(meta_path))[i*j + j] + ",	");
+					fileOut.print( ((double[])(meta_path))[i*b.size() + j] + ",");
 				}
+				//System.out.println(a.size() + " " + b.size());
+				//fileOut.print((D_P_D[i][j] != 0)? "1":"0");
+
 				fileOut.print(g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()))? "1":"0");
 				if (g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()))) {
-					System.out.println("HERE!");
+					//System.out.println("HERE!");
 				}
+				
 				fileOut.println();
 			}	
 			
@@ -543,6 +568,64 @@ public class main {
 		fileOut.flush();
 		fileOut.close();
 	}
+	
+public static void printToFileSS( UndirectedGraph<vertex, DefaultEdge> g, Map<String, vertex> a, Map<String, vertex> b, PrintWriter fileOut3, Object... v) throws IOException{
+		Random generator = new Random(System.currentTimeMillis());
+		Set<vertex>  x = g.vertexSet();
+		Object[] gVertices = (x.toArray());
+		for (int i = 0; i < a.size() ; i++) {
+			for (int j = 0; j < b.size(); j++) {
+				fileOut3.flush();
+				boolean link = g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()));
+				if (link) 
+				{
+					fileOut3.print( ((vertex)(a.values()).toArray()[i]).getName() + "-" + ((vertex)(b.values()).toArray()[j]).getName() + "," );
+					fileOut3.flush();
+					for (Object meta_path: v) {
+						fileOut3.print( ((double[])(meta_path))[i*b.size() + j] + ",");
+						fileOut3.flush();
+					}
+					fileOut3.print(g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), b.get(((vertex)(b.values()).toArray()[j]).getName()))? "1":"0");
+					fileOut3.print("," + (((vertex)(a.values()).toArray()[i]).toString() + " " + (((vertex)(b.values()).toArray()[j]).toString() )) + " " + i + "[" + getPos(a, ((vertex)(a.values()).toArray()[i])) + "]" + " " + j + "[" + getPos(b, ((vertex)(b.values()).toArray()[j])) + "]");
+					fileOut3.println();
+					vertex t;
+					do {
+						int p = generator.nextInt(gVertices.length);
+						t = (vertex) gVertices[p];
+					} while(  (!t.getType().equalsIgnoreCase("project")) ||  (g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), t)   && (t.getType().equalsIgnoreCase("project"))));					
+					
+					fileOut3.print( ((vertex)(a.values()).toArray()[i]).getName() + "-" + (t.getName() + "," ));
+					int pos = getPos(b, t);
+					//System.out.println("Posicion:" + pos);
+					//System.out.println(t.toString());
+					for (Object meta_path: v) {
+						fileOut3.print( ((double[])(meta_path))[i*b.size() + pos] + ",");
+						fileOut3.flush();
+					}
+					fileOut3.print(g.containsEdge(a.get(((vertex)(a.values()).toArray()[i]).getName()), t)? "1":"0");
+					fileOut3.print("," + (((vertex)(a.values()).toArray()[i]).toString() + " " + t.toString()) + " " + i + "[" + getPos(a, ((vertex)(a.values()).toArray()[i])) + "]" + " " + pos + "[" + getPos(b, t) + "]");
+					fileOut3.println();
+					fileOut3.flush();
+				}
+			}		
+		}
+		fileOut3.flush();
+		fileOut3.close();
+	}
+
+	public static int getPos(Map<String, vertex> m, vertex v ) {
+	
+		Object[] vertices = m.values().toArray();
+		for (int i = 0; i < vertices.length; i++) {
+			//System.out.println(((vertex)(vertices[i])).toString());
+			if (v.getName().equalsIgnoreCase(((vertex)(vertices[i])).getName())) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
 	
 	public static int[][] matmul(Object... args) {
 		System.out.println("Multiplying a " + ((int[][])(args[0])).length + "x" + ((int[][])(args[0]))[0].length + " and " + ((int[][])(args[1])).length + "x" + ((int[][])(args[1]))[0].length);
@@ -572,16 +655,35 @@ public class main {
 		return result;
 	}
 	
-	public static double[] NPC(int[][] A_A) {
+	public static double[] NPC(int[][] A_A, Map<String, vertex> a, Map<String, vertex> b, String nameA, String nameB, String matName) throws IOException {
+		PrintWriter fileOut = new PrintWriter ( new FileWriter ("NPC_" + nameA + "_" + nameB + "_" + matName +".csv"));
+		fileOut.print(nameA + " size " + a.size()+ ". " + nameB + " size " + b.size()  );
+		fileOut.println();
+		fileOut.print("NPC matrix size " + A_A.length + " " + A_A[0].length );
+		fileOut.println();
+		Object[] aArray = a.values().toArray();
+		Object[] bArray = b.values().toArray();
+		fileOut.print(",");
+		for (Object colVertex:  bArray) {
+			fileOut.print("," + ((vertex)(colVertex)).getName());
+		}
+		fileOut.println();
+		fileOut.print(",");
+		for (int i = 0; i < b.size(); i++) {
+			fileOut.print("," + i);
+		}
+		fileOut.println();
 		double result[] = new double[A_A.length * A_A[0].length];
 		int index = 0;
 		for(int i = 0; i < A_A.length; i++) {
+			fileOut.print( ((vertex)(aArray[i])).getName() + "," + i + ",");
 			int sumRow = sumRow(A_A, i);
 			for (int j = 0; j < A_A[0].length; j++) {
-				//TODO check for NA values and its reason
 				int total = (sumRow + sumColumn(A_A, j));
 				if (total != 0)
-					result[index++] = ((A_A[i][j]*2)*(1.0)) / total;
+					result[index] = ((A_A[i][j]*2)*(1.0)) / total;
+				index++;
+				fileOut.print( result[index -1] + ",");
 				/*
 				System.out.println( ((vertex)(developer.values()).toArray()[i]).getName() + " " + 
 						((vertex)(project.values()).toArray()[j]).getName() + " " +
@@ -592,7 +694,10 @@ public class main {
 				sumColumn(A_A, j));
 				*/
 			}
+			fileOut.println();
 		}
+		fileOut.flush();
+		fileOut.close();
 		return result;
 	}
 	

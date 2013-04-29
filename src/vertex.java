@@ -49,4 +49,8 @@ public class vertex {
 		return this.attributes;
 	}
 	
+	public String toString(){
+		return this.type + " " + this.name;
+	}
+	
 }

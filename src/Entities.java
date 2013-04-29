@@ -6,10 +6,11 @@ public enum Entities {
 	PROJECT("project"),
 	DEVELOPER("developer"),
 	AUDIENCE("audience"),
-	LANGUAJE("languaje"),
+	LANGUAGE("language"),
 	LICENSE("license"),
-	SYSTEM("system"),
-	TOPIC("topic");
+	SO("so"),
+	TOPIC("topic"),
+	STATUS("status");
 	
 	
 	private final String name;
